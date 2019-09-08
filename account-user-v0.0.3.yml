@@ -1,0 +1,161 @@
+openapi: 3.0.0
+info:
+  title: MyIndo Platform Account User API
+  description: >
+
+    # Document API Account User
+      This Document aim at to discribe a Account User API module.
+      With digital API on account user modeule, user can use the features available on GreenPages Application.
+
+    ## CRUD
+
+      Proses CRUD dilakukan untuk dapat menggunakan fitur pada aplikasi GreenPages, adapun permintaan yang dapat dilakukan adalah :
+      - GET     = Give the results of an information from an object
+      - POST    = Create an object
+      - PUT     = Make changes to the data of an object
+      - DELETE  = Delete the data from an object
+
+    ## Response Messages
+      When user use the API, user will get response in accordance with the conditions that occur.
+      The response that will be displayed when the user uses the API.
+
+      Pada saat API dijalankan, akan muncul respon sesai dengan kondisi yang terjadi.
+      Adapun respon yang akan muncul pada saat menjalankan API di modul account user ini adalah:
+
+      - 201 : OK
+      - 201 : Created
+      - 401 : Unauthorized
+      - 403 : Forbidden
+      - 404 : Not Found
+
+  contact:
+    email: halo@myindo.co.id
+  version: 0.0.3
+#host: myplatform-dev.myindo.io
+host: localhost:4122
+basePath: "/api/account/v1.0.0/user"
+servers:
+  - url: "https://myplatform-dev.myindo.io/api/account/v0.0.1/user"
+  - url: "https://myplatform-dev.myindo.io/api/account/v0.0.1/public/user"
+  - url: "https://myplatform-dev.myindo.io/api/account/v1.1.0/public/user/"
+  - url: "http://localhost:4122/api/account/v1.0.0/user"
+  - url: "http://localhost:4122/api/account/v1.0.0/public/user/"
+
+tags:
+
+- name: Registration
+  description: Registration
+
+paths:
+# Registration Controller
+  "/userRegistration/simpleOtp":
+      post:
+        tags:
+        - Registration
+        summary: Complete Data
+        operationId: userRegistrationAddUsingPOST
+        description: >
+          This API used to registration process,
+          API ini digunakan untuk melakukan proses registrasi dengan mengisi nomor handphone, kemudian pengguna akan mendapatkan kode OTP melalui sms.
+          Setelah pengguna mengisi kode OTP, pengguna akan otomatis login pada aplikasi GreenPages.
+        requestBody:
+          description: Add new user
+          required: true
+          content:
+            application/json:
+              schema:
+                "$ref": '#/definitions/SimpleRegistrationOTPForm'
+        responses:
+          '201':
+            description: Created
+            content:
+              application/json:
+                schema:
+                  "$ref": '#/components/schemas/registration201Post'
+          '400':
+            description: Bad Request
+            content:
+              application/json:
+                schema:
+                  "$ref": '#/components/schemas/registration400Post'
+definitions:
+  SimpleRegistrationOTPForm:
+    type: object
+    properties:
+      handphone:
+        type: string
+        example: 628977552005
+components:
+  securitySchemes:
+    User_OAuth2:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: "https://myplatform-dev.myindo.io/api/security/v1.1.0/oauth/token"
+#          tokenUrl: "http://172.17.3.252:4111/api/security/v0.0.1/oauth/token"
+  schemas:
+    errors:
+      type: array
+      items: {}
+    warnings:
+      type: array
+      items: {}
+    data:
+      type: array
+      items: {}
+    dictionaries:
+      type: object
+      items: {}
+    dictionariess:
+      type: object
+      properties:
+        params:
+          type: object
+# Registration Complate Data 201 & 400
+    dataRegistration201Post:
+      type: object
+      properties:
+        userRegistration:
+          type: object
+          properties:
+            noTelpn:
+              type: string
+    registration201Post:
+      type: object
+      required: false
+      description: Response 201
+      properties:
+        errors:
+          $ref: '#/components/schemas/errors'
+        warnings:
+          $ref: '#/components/schemas/warnings'
+        data:
+          $ref: '#/components/schemas/dataRegistration201Post'
+        dictionaries:
+          $ref: '#/components/schemas/dictionaries'
+    errorRegistration400Post:
+      type: object
+      properties:
+        code:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        source:
+          type: string
+        status:
+          type: string
+    registration400Post:
+      type: object
+      required: false
+      description: Response 400
+      properties:
+        errors:
+          $ref: '#/components/schemas/errorRegistration400Post'
+        warnings:
+          $ref: '#/components/schemas/warnings'
+        data:
+          $ref: '#/components/schemas/data'
+        dictionaries:
+          $ref: '#/components/schemas/dictionaries'
